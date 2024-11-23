@@ -56,7 +56,6 @@ export class AuthService {
     }
     const payload = { username: username };
     const refreshToken = this.generateRefreshToken(payload);
-    console.log('genereated refresh token', refreshToken);
     this.refreshTokenRepository.upsert(
       { user: { username: username }, refreshToken: refreshToken },
       ['user'],

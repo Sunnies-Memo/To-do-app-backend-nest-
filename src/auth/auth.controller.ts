@@ -12,7 +12,6 @@ export class AuthController {
   @Public()
   @Post('login')
   async login(@Body() loginRequest: LoginRequest, @Res() res: Response) {
-    console.log('Login request received:', loginRequest);
     const tokens = await this.authService.login(
       loginRequest.username,
       loginRequest.password,
@@ -32,7 +31,6 @@ export class AuthController {
   @Public()
   @Post('refresh')
   async doRefresh(@Req() req: Request, @Res() res: Response) {
-    console.log('refreshing');
     const refreshToken = req.cookies['refreshToken'];
     if (!refreshToken) {
       res.status(200).json({ message: 'There is no refresh token' });
@@ -62,10 +60,8 @@ export class AuthController {
   @Public()
   @Get('logout')
   async logout(@Req() req: Request, @Res() res: Response) {
-    console.log('=================in logout');
     const refreshToken = req.cookies['refreshToken'];
     if (!refreshToken) {
-      console.log('no refresh token');
       res.status(401).json({ message: 'No refresh token provided' });
       return;
     }

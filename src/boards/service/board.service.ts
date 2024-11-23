@@ -35,7 +35,6 @@ export class BoardService {
   }
 
   async createBoard(board: BoardsDTO): Promise<Board> {
-    console.log('createboard service');
     return this.boardRepository.save({ ...board, todos: [] });
   }
 

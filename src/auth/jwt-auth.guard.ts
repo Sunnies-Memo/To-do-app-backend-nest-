@@ -19,21 +19,15 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       context.getHandler(),
       context.getClass(),
     ]);
-    console.log('-=-=-=-=-=-=-=GUARD-=-=-=-=-=-=-=-');
     if (isPublic) {
-      console.log('is Public');
       return true;
     }
     try {
-      console.log('try');
       const result = super.canActivate(context);
       return result;
     } catch (e) {
-      console.log('in error', e);
       if (e instanceof UnauthorizedException) {
-        console.log('catching Error');
-        console.log('JWT Authentication Failed:', e.message); // 로그 출력
-        throw e; // 예외를 다시 던져 처리
+        throw e;
       }
     }
   }

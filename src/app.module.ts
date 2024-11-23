@@ -17,6 +17,7 @@ import { ConfigModule } from '@nestjs/config';
 import mysql2 from 'mysql2';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { DefaultModule } from './default/default.module';
 
 @Global()
 @Module({
@@ -42,6 +43,7 @@ import { APP_GUARD } from '@nestjs/core';
       logging: true,
     }),
     JwtModule,
+    DefaultModule,
   ],
   controllers: [],
   providers: [
