@@ -15,7 +15,7 @@ export class S3ImageService {
     path: string,
   ) {
     const fileType: FileTypeResult | null = await fromBuffer(buffer);
-    if (!fileType || this.isImage(fileType.mime)) {
+    if (!fileType || !this.isImage(fileType.mime)) {
       throw new BadRequestException('Invalid image file type.');
     }
     return this.s3Service.uploadFile(

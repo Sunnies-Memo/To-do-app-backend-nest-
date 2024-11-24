@@ -47,7 +47,7 @@ export class UserController {
     @Body('username') usernameFromBody: string,
     @Req() req: Request,
   ) {
-    const username = req.user['username'];
+    const username: string | null = req.user['username'];
     if (username !== usernameFromBody) {
       throw new HttpException('Not authorized', HttpStatus.FORBIDDEN);
     }
@@ -65,10 +65,7 @@ export class UserController {
       throw new HttpException('Invalid image type', HttpStatus.BAD_REQUEST);
     }
 
-    const profileImg = await this.userService.uploadProfileImg(
-      file,
-      file.filename,
-    );
+    const profileImg = await this.userService.uploadProfileImg(file, username);
     return { profileImg };
   }
 

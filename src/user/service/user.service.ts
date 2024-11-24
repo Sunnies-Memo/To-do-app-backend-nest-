@@ -142,9 +142,14 @@ export class UserService {
       file.buffer,
       this.PROFILE_IMG_PATH,
     );
-    await this.repository.update(username, {
-      profileImg: newProfileImgPath,
-    });
+    const result = await this.repository.update(
+      { username: username },
+      {
+        profileImg: newProfileImgPath,
+      },
+    );
+    console.log('profile img url', newProfileImgPath);
+    console.log('profile img result', result);
 
     return newProfileImgPath;
   }
