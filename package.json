@@ -37,7 +37,6 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "cookie-parser": "^1.4.7",
-    "fastify": "^5.1.0",
     "file-type": "^16.5.4",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.11.4",
