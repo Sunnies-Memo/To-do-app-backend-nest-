@@ -1,6 +1,7 @@
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { S3Client } from '@aws-sdk/client-s3';
+import { Upload } from '@aws-sdk/lib-storage';
 import { Injectable } from '@nestjs/common';
-import { Readable } from 'stream';
+import { FileTypeResult } from 'file-type';
 
 @Injectable()
 export class S3Service {
@@ -12,18 +13,25 @@ export class S3Service {
   }
 
   async uploadFile(
-    stream: Readable,
+    buffer: Buffer,
     filename: string,
     bucketName: string,
+    fileType: FileTypeResult,
     path: string,
   ) {
     const params = {
       Bucket: bucketName,
       Key: `${path}${filename}`,
-      Body: stream,
+      Body: buffer,
+      ContentType: fileType.mime,
     };
-    const command = new PutObjectCommand(params);
-    return this.s3Client.send(command);
+
+    const upload = new Upload({
+      client: this.s3Client,
+      params: params,
+    });
+
+    return upload.done();
   }
 
   generateURL(

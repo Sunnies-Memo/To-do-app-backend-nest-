@@ -1,8 +1,7 @@
 import { Injectable, BadRequestException, UseFilters } from '@nestjs/common';
 import { AwsExceptionFilter } from '../../../global/filters/aws-exceptions.filter';
 import { S3Service } from '../s3/s3.service';
-import { FileTypeResult } from 'file-type';
-import { Readable } from 'stream';
+import { FileTypeResult, fromBuffer } from 'file-type';
 
 @Injectable()
 @UseFilters(AwsExceptionFilter)
@@ -15,13 +14,17 @@ export class S3ImageService {
     bucketName: string,
     path: string,
   ) {
-    const { fileTypeFromBuffer } = await import('file-type');
-    const fileType: FileTypeResult | null = await fileTypeFromBuffer(buffer);
+    const fileType: FileTypeResult | null = await fromBuffer(buffer);
     if (!fileType || this.isImage(fileType.mime)) {
       throw new BadRequestException('Invalid image file type.');
     }
-    const stream = Readable.from(buffer);
-    return this.s3Service.uploadFile(stream, filename, bucketName, path);
+    return this.s3Service.uploadFile(
+      buffer,
+      filename,
+      bucketName,
+      fileType,
+      path,
+    );
   }
 
   private isImage(mimeType: string): boolean {
