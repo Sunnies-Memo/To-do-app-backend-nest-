@@ -135,16 +135,14 @@ export class UserService {
   }
 
   async uploadProfileImg(
-    userProfileRequest: UserProfileRequest,
+    file: Express.Multer.File,
+    username: string,
   ): Promise<string> {
-    if (!userProfileRequest.profileImg)
-      throw new NotFoundException('No image provided');
-
     const newProfileImgPath = await this.uploadImg(
-      userProfileRequest.profileImg,
+      file.buffer,
       this.PROFILE_IMG_PATH,
     );
-    await this.repository.update(userProfileRequest.username, {
+    await this.repository.update(username, {
       profileImg: newProfileImgPath,
     });
 

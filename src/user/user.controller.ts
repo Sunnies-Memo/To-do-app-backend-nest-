@@ -5,13 +5,12 @@ import {
   Post,
   Body,
   Req,
-  UseGuards,
   UploadedFile,
   UseInterceptors,
   HttpException,
   HttpStatus,
+  NotFoundException,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 import { UserService } from './service/user.service';
@@ -45,12 +44,15 @@ export class UserController {
   @UseInterceptors(FileInterceptor('profileImg'))
   async uploadProfileImg(
     @UploadedFile() file: Express.Multer.File,
-    @Body() userProfileUpdateRequest: UserProfileRequest,
+    @Body('username') usernameFromBody: string,
     @Req() req: Request,
   ) {
     const username = req.user['username'];
-    if (username !== userProfileUpdateRequest.username) {
+    if (username !== usernameFromBody) {
       throw new HttpException('Not authorized', HttpStatus.FORBIDDEN);
+    }
+    if (!file) {
+      throw new NotFoundException('No image file provided');
     }
 
     if (file.size > 15 * 1024 * 1024) {
@@ -64,13 +66,13 @@ export class UserController {
     }
 
     const profileImg = await this.userService.uploadProfileImg(
-      userProfileUpdateRequest,
+      file,
+      file.filename,
     );
     return { profileImg };
   }
 
   @Post('/bgImg')
-  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('bgImg'))
   async uploadBgImg(
     @UploadedFile() file: Express.Multer.File,

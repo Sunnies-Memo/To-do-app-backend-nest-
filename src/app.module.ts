@@ -18,6 +18,8 @@ import mysql2 from 'mysql2';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { DefaultModule } from './default/default.module';
+import { MulterModule } from '@nestjs/platform-express';
+import { memoryStorage } from 'multer';
 
 @Global()
 @Module({
@@ -30,6 +32,9 @@ import { DefaultModule } from './default/default.module';
     AuthModule,
     UserModule,
     S3Module,
+    MulterModule.register({
+      storage: memoryStorage(),
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       driver: mysql2,
@@ -37,13 +42,14 @@ import { DefaultModule } from './default/default.module';
       port: 3306,
       username: process.env.DB_USER,
       password: process.env.DB_PWD,
-      database: 'todo_app',
+      database: process.env.DB,
       entities: [User, Board, Card, RefreshToken],
       synchronize: false,
       logging: true,
     }),
     JwtModule,
     DefaultModule,
+    MulterModule,
   ],
   controllers: [],
   providers: [
